@@ -24,7 +24,52 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+//API date
+app.get('/api/:date', (req,res)=>{
+  let response= {};
+  var reqDate = req.params.date;
 
+  if(reqDate === null){
+    response['unix'] = new Date().getTime();
+    response['utc'] = new Date().toUTCString();
+    res.json(response);
+  }
+
+
+    var parsedDate = new Date(reqDate);
+    if(parsedDate === "Invalid Date"){
+      res.json({"error":"Invalid Date"});
+    }else {
+
+      if(reqDate.includes('-') || reqDate.includes('/') || reqDate.includes(' ')){
+
+      response['unix'] = new Date(reqDate).getTime();
+      response['utc'] = new Date(reqDate).toUTCString();
+      //res.json({"unix":reqDate, "utc":dateTimeString});
+      
+    }else {
+      var input = parseInt(reqDate);
+
+      response['unix'] = new Date(input).getTime();
+      response['utc'] = new Date(input).toUTCString();
+      //res.json({"unix":unixDate, "utc":inputDate});
+      
+    }
+
+    if(!response['unix'] || !response['utc']){
+      res.json({"error":"Invalid Date"});
+    }else {
+      res.json(response);
+    } 
+  }
+});
+
+app.get('/api/', (req,res)=>{
+    let response= {};
+    response['unix'] = new Date().getTime();
+    response['utc'] = new Date().toUTCString();
+    res.json(response);
+})
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
